@@ -7,7 +7,7 @@
 
 #include <time.h>
 
-#include "comp_test.h"
+#include "dado_padrao.h"
 
 void dice::set_face(short unsigned int value){
 	face = value;
