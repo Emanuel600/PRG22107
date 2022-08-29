@@ -5,8 +5,8 @@
  *      Author: Aluno
  */
 
-#ifndef COMP_TEST_H_
-#define COMP_TEST_H_
+#ifndef DADO_PADRAO_H_
+#define DADO_PADRAO_H_
 
 #include <iostream>
 
@@ -24,4 +24,4 @@ public:
 	short unsigned int get_face();
 };
 
-#endif /* COMP_TEST_H_ */
+#endif /*DADO_PADRAO_H_ */
