@@ -4,7 +4,7 @@
  *  Created on: 29 de ago de 2022
  *      Author: Aluno
  */
-#include "comp_test.h"
+#include "dado_padrao.h"
 
 int main(){
 	dice new_dye;
