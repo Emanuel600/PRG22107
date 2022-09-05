@@ -4,16 +4,17 @@
  *  Created on: 29 de ago de 2022
  *      Author: Aluno
  */
+
+#include <time.h>
+
 #include "dado_padrao.h"
+#include "game.h"
 
 int main(){
-	dice new_dye;
-
-	//cout << "Received face " << new_dye.get_face() << endl;
+	DiceGame game;
 
 	for (int i = 0; i < 10; i++){
-		new_dye.roll();
-		cout << "Rolled a " << new_dye.get_face() << endl << endl;
+		game.play();
 	}
 
 }
