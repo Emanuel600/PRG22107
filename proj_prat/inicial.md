@@ -19,7 +19,7 @@
       própria isolada e um critério de interação com outros eventos. Isto pode ser relativamente
       complexo.
       
-  ## 3 Todo list / notes
+  ## 3 Todo list / notes => escolhida
 
         Uma lista que pode ser modificada pelo usuário com checkmarks e notas.
         
