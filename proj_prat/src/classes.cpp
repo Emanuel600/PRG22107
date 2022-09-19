@@ -22,6 +22,6 @@ void Notebook::note(string title){
 
 void Notebook::show(){
 	for (auto iter=_notes.begin(); iter!=_notes.end(); iter++){
-		cout << ((*iter)->get_title) << endl;
+		cout << ((*iter)->get_title()) << endl;
 	}
 }
