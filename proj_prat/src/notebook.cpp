@@ -1,6 +1,8 @@
+#include <string>
+
 #include "notebook.h"
 
-void Notebook::note(string title){
+void Notebook::note(QString title){
     Note* note = new Note();
 
     note->title(title);
@@ -8,7 +10,7 @@ void Notebook::note(string title){
     _notes.push_back(note);
 }
 
-void Notebook::note(string title, string cont){
+void Notebook::note(QString title, QString cont){
     Note* note = new Note();
 
     note->title(title);
@@ -19,7 +21,7 @@ void Notebook::note(string title, string cont){
 
 void Notebook::show(){
     for (auto iter=_notes.begin(); iter!=_notes.end(); iter++){
-        cout << ((*iter)->title()) << endl;
+        cout << ((*iter)->title()).toStdString() << endl;
     }
 }
 
