@@ -9,13 +9,17 @@ class Interface{
 
     unsigned _ind; // Índice do Notebook que está sendo visualizado
 public:
-    Interface(string title) {Notebook book(title); _books.push_back(&book); };
+    Interface(QString title) {Notebook book(title); _books.push_back(&book); }
+    Interface(Notebook* book) { _books.push_back(book); }
 
-    Notebook open(int i) {return *(_books[i]); };
+    Notebook open() {return **(_books.begin()); }
+
     // Cria Notebooks a partir de um arquivo
-    void create(string path);
+    void create();
     // Salva Notebooks a partir em um arquivo
-    void save(string path);
+    void save();
+    // Adiciona notebook a uma interface existente
+    void add(Notebook* book) { _books.push_back(book); }
 };
 
 #endif // INTERFACE_H

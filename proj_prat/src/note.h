@@ -1,5 +1,5 @@
 /* System Includes */
-#include <string>
+#include <QString>
 #include <iostream>
 
 using namespace std;
@@ -9,20 +9,18 @@ using namespace std;
 
 class Note{
 private:
-    string _title;
-    string _contents; // Pode ser feita em markdown no QT
+    QString _title;
+    QString _contents; // Pode ser feita em markdown no QT
 public:
-    Note() {};
-    Note(string title) {_title = title; }
-    Note(string title, string cont) {_title = title; _contents = cont; }
+    Note() {}
+    Note(QString title) {_title = title; }
+    Note(QString title, QString cont) {_title = title; _contents = cont; }
 
-    void title(string title) { _title = title; }
-    void content(string contents) { _contents = contents; }
+    void title(QString title) { _title = title; }
+    void content(QString contents) { _contents = contents; }
 
-    string title() { return _title; }
-    string content() { return _contents; }
-    // Salva em formato json
-    void json(string path);
+    QString title() { return _title; }
+    QString content() { return _contents; }
 };
 
 #endif // NOTE_H

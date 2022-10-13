@@ -1,5 +1,6 @@
 /* System Includes */
 #include <vector>
+#include <QString>
 /* Modular Includes */
 #include "note.h"
 
@@ -9,17 +10,19 @@
 class Notebook{
 private:
     vector<Note*> _notes;
-    string _title;
+    QString _title;
 public:
-    Notebook() {};
-    Notebook(string title) { _title=title; }
+    Notebook() {_title = "";}
+    Notebook(QString title) { _title=title; }
 
-    Note* open(int i) {return _notes[i]; }
+    Note* open(unsigned i) {return _notes[i]; }
+    vector<Note*> notes() { return _notes; }
 
-    void title(string title) { _title = title; }
+    void title(QString title) { _title = title; }
+    QString title() {return _title;}
     // Cria/adiciona notas
-    void note(string title);
-    void note(string title, string cont);
+    void note(QString title);
+    void note(QString title, QString cont);
     void note(Note* note) { _notes.push_back(note); }
 
     void show();
