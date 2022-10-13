@@ -15,7 +15,7 @@ public:
     Notebook open() {return **(_books.begin()); }
 
     // Cria Notebooks a partir de um arquivo
-    void create();
+    Interface create();
     // Salva Notebooks a partir em um arquivo
     void save();
     // Adiciona notebook a uma interface existente

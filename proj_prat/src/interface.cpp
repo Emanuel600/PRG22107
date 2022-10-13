@@ -10,7 +10,7 @@
 
 /* Modular Includes */
 #include "interface.h"
-
+// Salva notebooks em json
 void Interface::save(){
     /* Objetos */
     QJsonObject note;
@@ -49,10 +49,29 @@ void Interface::save(){
 
     QByteArray output = QJsonDocument(main).toJson();
 
-    //cout << output.toStdString();
-
     QFile fout("C:\\Users\\Aluno\\Downloads\\output.json");
     fout.open(QIODevice::WriteOnly);
     fout.write(output);
     fout.close();
+}
+// Cria notebooks a partir de um json
+Interface Interface::create(){
+    QByteArray input;
+
+    QFile fin("C:\\Users\\Aluno\\Downloads\\output.json");
+    fin.open(QIODevice::ReadOnly);
+    input = fin.readAll();
+    fin.close();
+
+    QJsonParseError jsonError;
+    QJsonDocument jason = QJsonDocument::fromJson(input, &jsonError);
+    if(jsonError.error != QJsonParseError::NoError){
+        cerr << "Erro ao ler arquivo salvo" << endl;
+        return nullptr;
+    }
+
+    if(jason.isObject()){
+        QJsonObject jason_obj = jason.object();
+    }
+    return nullptr;
 }
