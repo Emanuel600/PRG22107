@@ -72,6 +72,33 @@ Interface Interface::create(){
 
     if(jason.isObject()){
         QJsonObject jason_obj = jason.object();
+        /* Pseudo-code */
+        /*
+         * for every notebook{
+         *    int n = *(notebook.open(j)).title.len() => title is an array containing titles of all notes
+         *      for(int i=0; i < n; i++){ => n is size+1
+         *        Note nota(title[i], content[i]) => content.len = title.len
+         *      }
+         *  }
+         */
+        QString snotebook = "Notebook";
+        if(jason_obj.contains(snotebook)){ // Verifica que possui notebook salvo
+            QJsonObject book_jason = jason_obj.value(snotebook).toObject(); // Notebook.json => reads empty
+            QStringList keys = book_jason.keys();
+
+            QByteArray json = QJsonDocument(book_jason).toJson();
+            cout << json.toStdString() << endl;
+
+            for (int i = 0; i < keys.size(); ++i){ // Imprime valores armazenados em 'keys' (nenhum)
+                cout << "Entered loop";
+                cout << keys.at(i).toLocal8Bit().constData();
+            }
+
+            for(auto key:keys){ // Not getting keys properly
+                auto note = book_jason.take(key); // note contains two arrays
+                cout << key.toStdString() << " : " << note.toString().toStdString();
+            }
+        }
     }
     return nullptr;
 }
