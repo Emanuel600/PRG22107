@@ -1,7 +1,7 @@
 #include "salarios.h"
 /* Classe Base */
-Salario::Salario(){
-}
+Salario::Salario(){ }
+Salario::~Salario() { }
 /* Classes Derivadas */
 // Fixo
 Fixo::Fixo(double fixo){ _fixo = fixo; }
@@ -13,7 +13,9 @@ double Comissao::value() {return _base * _percentage;}
 // Agregado
 void SalarioComposto::agrega(Salario *f){ _sal.push_back(f); }
 double SalarioComposto::value(){
+	double sal = 0;
     for(vector<Salario*>::iterator it = _sal.begin(); it!=_sal.end(); ++it){
-        value += (**it).value();
+        sal += (**it).value();
     }
+    return sal;
 }

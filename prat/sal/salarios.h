@@ -41,7 +41,7 @@ class SalarioComposto : public Salario{
 private:
     std::vector<Salario*> _sal;
 public:
-    SalarioComposto();
+    SalarioComposto() { }
 
     void agrega(Salario* f);
     double value();
