@@ -102,3 +102,53 @@ Interface Interface::create(){
     }
     return nullptr;
 }
+
+/* Adicional
+// Cria notebooks a partir de um json
+Interface Interface::create(){
+    QByteArray input;
+
+    QFile fin("C:\\Users\\emanuel\\Downloads\\output.json");
+    if (fin.open(QIODevice::ReadOnly | QIODevice::Text)){
+        input = fin.readAll();
+        fin.close();
+    }
+    else {
+        cerr << "Erro ao ler arquivo salvo" << endl;
+        return nullptr;
+    }
+
+    QJsonParseError jsonerror;
+    QJsonDocument jason = QJsonDocument::fromJson(input, &jsonerror);
+
+    qDebug() << jsonerror.errorString();
+
+    if(jason.isObject()){
+        QJsonArray jarr = jason.array(); */
+        /* Pseudo-code */
+        /*
+        * for every notebook{
+        *    int n = *(notebook.open(j)).title.len() => title is an array containing titles of all notes
+        *      for(int i=0; i < n; i++){ => n is size+1
+        *        Note nota(title[i], content[i]) => content.len = title.len
+        *      }
+        *  }
+        *//*
+        QJsonValue val;
+
+        qDebug() << jarr;
+
+        for(auto jsonObj : jarr){
+            qDebug() << "jar is not empty";
+            val = jsonObj.toObject().value("Notebook");
+            QString valstr = val.toString();
+            qDebug() << "Notebook: " << valstr;
+
+            val = jsonObj.toObject().value("Notes");
+            valstr = val.toString();
+            qDebug() << "Notes: " << valstr;
+       }
+    }
+    return nullptr;
+}
+*/
