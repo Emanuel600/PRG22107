@@ -1,31 +1,9 @@
-#include "interface.h"
+#include "shelf.h"
 
 int main(){
-    Notebook book("aaaaa");
+    Shelf shelf;
 
-    book.note("Title");
-    book.note("Title");
-    book.note("", "Lorena Epsum");
-    book.note("Title", "Lorem Ipsum");
-    book.note("Title");
+    shelf.create();
 
-    book.show();
-
-    Notebook trog("dyte");
-
-    trog.note("b", "v");
-    trog.note("i");
-    trog.note("j");
-
-    Interface inter(book);
-    inter.add(trog);
-    inter.add(*new Notebook);
-
-    inter.save();
-
-    Interface face;
-
-    face.create();
-
-    cout << "" << endl;
+    shelf.showcase();
 }

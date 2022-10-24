@@ -20,9 +20,13 @@ void Notebook::note(QString title, QString cont){
 }
 
 void Notebook::show(){
+    cout << "Notebook: " << _title.toStdString() << endl;
     for (auto iter=_notes.begin(); iter!=_notes.end(); iter++){
-        cout << ((*iter)->title()).toStdString() << endl;
+        cout << "\t- " << ((*iter)->title()).toStdString() << endl;
     }
 }
 
-
+void Notebook::close(){
+    for (auto note : _notes)
+        delete note;
+}

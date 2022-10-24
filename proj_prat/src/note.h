@@ -16,6 +16,8 @@ public:
     Note(QString title) {_title = title; }
     Note(QString title, QString cont) {_title = title; _contents = cont; }
 
+    ~Note() { cout << "Note {" << _title.toStdString() << "} has been destroyed" << endl; }
+
     void title(QString title) { _title = title; }
     void content(QString contents) { _contents = contents; }
 
