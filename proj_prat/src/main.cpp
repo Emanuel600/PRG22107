@@ -17,10 +17,15 @@ int main(){
     trog.note("i");
     trog.note("j");
 
-    Interface inter(&book);
-    inter.add(&trog);
-    inter.add(new Notebook);
+    Interface inter(book);
+    inter.add(trog);
+    inter.add(*new Notebook);
 
     inter.save();
-    inter.create();
+
+    Interface face;
+
+    face.create();
+
+    cout << "" << endl;
 }

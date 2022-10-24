@@ -10,7 +10,19 @@
 
 /* Modular Includes */
 #include "interface.h"
+
 // Salva notebooks em json
+/*
+void Interface::add(Notebook book){
+    vector<Note*> notes = book.notes();
+    QString title = book.title();
+
+    Notebook dummy;
+    dummy.note(notes);
+    dummy.title(title);
+
+    this->add(&dummy);
+}*/
 void Interface::save(){
     /* Objetos */
     QJsonObject note;
@@ -22,8 +34,8 @@ void Interface::save(){
     QJsonArray title;
     QJsonArray cont;
 
-    for(vector<Notebook*>::iterator it = _books.begin(); it!=_books.end(); ++it){
-        Notebook book= *(*it);
+    for(vector<Notebook>::iterator it = _books.begin(); it!=_books.end(); ++it){
+        Notebook book= *it;
 
         vector<Note*> notes = book.notes();
 
@@ -55,7 +67,7 @@ void Interface::save(){
     fout.close();
 }
 // Cria notebooks a partir de um json
-Interface Interface::create(){
+void Interface::create(){
     QByteArray input;
 
     QFile fin("C:\\Users\\Aluno\\Downloads\\output.json");
@@ -67,88 +79,42 @@ Interface Interface::create(){
     QJsonDocument jason = QJsonDocument::fromJson(input, &jsonError);
     if(jsonError.error != QJsonParseError::NoError){
         cerr << "Erro ao ler arquivo salvo" << endl;
-        return nullptr;
+        return;
     }
 
     if(jason.isObject()){
-        QJsonObject jason_obj = jason.object();
-        /* Pseudo-code */
-        /*
-         * for every notebook{
-         *    int n = *(notebook.open(j)).title.len() => title is an array containing titles of all notes
-         *      for(int i=0; i < n; i++){ => n is size+1
-         *        Note nota(title[i], content[i]) => content.len = title.len
-         *      }
-         *  }
-         */
-        QString snotebook = "Notebook";
-        if(jason_obj.contains(snotebook)){ // Verifica que possui notebook salvo
-            QJsonObject book_jason = jason_obj.value(snotebook).toObject(); // Notebook.json => reads empty
-            QStringList keys = book_jason.keys();
+        QJsonObject jason_obj = jason.object(); // Contains all saved notebooks
+        QString str = "Notebook";
+        if(jason_obj.contains(str)){ // Verifica que possui notebook salvo
+            QJsonArray book_jason = jason_obj[str].toArray();
 
-            QByteArray json = QJsonDocument(book_jason).toJson();
-            cout << json.toStdString() << endl;
+            for (auto book_auto : book_jason){
+                Notebook book;
 
-            for (int i = 0; i < keys.size(); ++i){ // Imprime valores armazenados em 'keys' (nenhum)
-                cout << "Entered loop";
-                cout << keys.at(i).toLocal8Bit().constData();
+                QJsonObject book_obj = book_auto.toObject();
+                QJsonObject note_obj = book_obj["notes"].toObject();
+                QString     title    = book_obj["title"].toString();
+
+                str = "notes"; book.title(title);
+
+                if(book_obj.contains(str)){
+                    QJsonArray titles = note_obj["title"].toArray();
+                    QJsonArray cont   = note_obj["content"].toArray();
+
+                    int size = titles.size();
+
+                    for(int j = 0 ; j < size ; j++){
+                        //Note note(titles.at(j).toString(), cont.at(j).toString());
+                        //book.note(&note);
+                        book.note(titles.at(j).toString(), cont.at(j).toString());
+                    }
+                    qDebug() << endl;
+                }
+                qDebug() << endl;
+                this->add(book);
+                qDebug() << endl;
             }
-
-            for(auto key:keys){ // Not getting keys properly
-                auto note = book_jason.take(key); // note contains two arrays
-                cout << key.toStdString() << " : " << note.toString().toStdString();
-            }
+            qDebug() << endl;
         }
     }
-    return nullptr;
 }
-
-/* Adicional
-// Cria notebooks a partir de um json
-Interface Interface::create(){
-    QByteArray input;
-
-    QFile fin("C:\\Users\\emanuel\\Downloads\\output.json");
-    if (fin.open(QIODevice::ReadOnly | QIODevice::Text)){
-        input = fin.readAll();
-        fin.close();
-    }
-    else {
-        cerr << "Erro ao ler arquivo salvo" << endl;
-        return nullptr;
-    }
-
-    QJsonParseError jsonerror;
-    QJsonDocument jason = QJsonDocument::fromJson(input, &jsonerror);
-
-    qDebug() << jsonerror.errorString();
-
-    if(jason.isObject()){
-        QJsonArray jarr = jason.array(); */
-        /* Pseudo-code */
-        /*
-        * for every notebook{
-        *    int n = *(notebook.open(j)).title.len() => title is an array containing titles of all notes
-        *      for(int i=0; i < n; i++){ => n is size+1
-        *        Note nota(title[i], content[i]) => content.len = title.len
-        *      }
-        *  }
-        *//*
-        QJsonValue val;
-
-        qDebug() << jarr;
-
-        for(auto jsonObj : jarr){
-            qDebug() << "jar is not empty";
-            val = jsonObj.toObject().value("Notebook");
-            QString valstr = val.toString();
-            qDebug() << "Notebook: " << valstr;
-
-            val = jsonObj.toObject().value("Notes");
-            valstr = val.toString();
-            qDebug() << "Notes: " << valstr;
-       }
-    }
-    return nullptr;
-}
-*/

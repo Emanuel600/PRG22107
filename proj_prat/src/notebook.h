@@ -24,6 +24,7 @@ public:
     void note(QString title);
     void note(QString title, QString cont);
     void note(Note* note) { _notes.push_back(note); }
+    void note(vector<Note*> note) { _notes = note; }
 
     void show();
 };
