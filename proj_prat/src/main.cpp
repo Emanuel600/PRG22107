@@ -2,8 +2,6 @@
 
 int main(){
     Shelf shelf;
-
-    shelf.create();
-
-    shelf.showcase();
+    shelf.load_books();
+    shelf.save();
 }

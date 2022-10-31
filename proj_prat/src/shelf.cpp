@@ -1,13 +1,3 @@
-/* System Includes */
-#include <QFile>
-#include <QDebug>
-#include <QString>
-#include <QtGlobal>
-#include <QJsonArray>
-#include <QJsonObject>
-#include <QTextStream>
-#include <QJsonDocument>
-
 /* Modular Includes */
 #include "shelf.h"
 
@@ -25,11 +15,12 @@ void Shelf::save(){
 
     for(vector<Notebook>::iterator it = _books.begin(); it!=_books.end(); ++it){
         Notebook book= *it;
+        book.load();
 
         vector<Note*> notes = book.notes();
 
         for(vector<Note*>::iterator itn = notes.begin(); itn!=notes.end(); ++itn){
-            Note note= *(*itn);
+            Note note= **itn;
             title.push_back(note.title());
             cont.push_back(note.content());
         }
@@ -50,24 +41,32 @@ void Shelf::save(){
 
     QByteArray output = QJsonDocument(main).toJson();
 
-    QFile fout("C:\\Users\\emanuel\\Downloads\\output.json");
-    fout.open(QIODevice::WriteOnly);
-    fout.write(output);
-    fout.close();
+    QFile fout("C:\\Users\\Aluno\\Downloads\\output.json");
+    if (fout.open(QIODevice::WriteOnly)){
+        fout.write(output);
+        fout.close();
+    } else {
+        cerr << "\nErro ao salvar o arquivo" << endl;
+    }
+    return;
 }
 // Cria notebooks a partir de um json
-void Shelf::create(){
+void Shelf::load_books(){
     QByteArray input;
 
-    QFile fin("C:\\Users\\emanuel\\Downloads\\output.json");
-    fin.open(QIODevice::ReadOnly);
-    input = fin.readAll();
-    fin.close();
+    QFile fin("C:\\Users\\Aluno\\Downloads\\output.json");
+    if(fin.open(QIODevice::ReadOnly)){
+        input = fin.readAll();
+        fin.close();
+    } else {
+        cerr << "Erro ao abrir arquivo\n" << endl;
+        return;
+    }
 
     QJsonParseError jsonError;
     QJsonDocument jason = QJsonDocument::fromJson(input, &jsonError);
     if(jsonError.error != QJsonParseError::NoError){
-        cerr << "Erro ao ler arquivo salvo" << endl;
+        cerr << "\nErro ao traduzir json" << endl;
         return;
     }
 
@@ -76,25 +75,17 @@ void Shelf::create(){
         QString str = "Notebook";
         if(jason_obj.contains(str)){ // Verifica que possui notebook salvo
             QJsonArray book_jason = jason_obj[str].toArray();
+            unsigned uid = 0;
 
             for (auto book_auto : book_jason){
                 Notebook book;
 
                 QJsonObject book_obj = book_auto.toObject();
-                QJsonObject note_obj = book_obj["notes"].toObject();
                 QString     title    = book_obj["title"].toString();
 
-                str = "notes"; book.title(title);
+                book.title(title);
+                book.uid(uid++);    // Como são salvos e carregados sempre da mesma forma, isto funciona como id único sem modificar o .json
 
-                if(book_obj.contains(str)){
-                    QJsonArray titles = note_obj["title"].toArray();
-                    QJsonArray cont   = note_obj["content"].toArray();
-
-                    int size = titles.size();
-
-                    for(int j = 0 ; j < size ; j++)
-                        book.note(titles.at(j).toString(), cont.at(j).toString());
-                }
                 _books.push_back(book);
             }
         }
@@ -109,7 +100,7 @@ void Shelf::showcase(){
 Shelf::~Shelf(){
     // Salva automaticamente quando o programa fecha
     this->save();
-    // Deleta notas armazenadas dinamicamente na memoria
+    // Deleta notas armazenadas na memoria
     for (auto book : _books)
         book.close();
 }
