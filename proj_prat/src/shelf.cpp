@@ -3,6 +3,7 @@
 
 // Salva notebooks em json
 void Shelf::save(){
+    cout << "Saving shelf" << endl;
     /* Objetos */
     QJsonObject note;
     QJsonObject main;
@@ -41,7 +42,7 @@ void Shelf::save(){
 
     QByteArray output = QJsonDocument(main).toJson();
 
-    QFile fout("C:\\Users\\Aluno\\Downloads\\output.json");
+    QFile fout(QDir::currentPath() + "\\output.json");
     if (fout.open(QIODevice::WriteOnly)){
         fout.write(output);
         fout.close();
@@ -54,7 +55,7 @@ void Shelf::save(){
 void Shelf::load_books(){
     QByteArray input;
 
-    QFile fin("C:\\Users\\Aluno\\Downloads\\output.json");
+    QFile fin(QDir::currentPath() + "\\output.json");
     if(fin.open(QIODevice::ReadOnly)){
         input = fin.readAll();
         fin.close();

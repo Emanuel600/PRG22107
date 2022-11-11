@@ -1,4 +1,5 @@
 /* System Includes */
+#include <QDir>
 #include <QFile>
 #include <vector>
 #include <QDebug>

@@ -28,7 +28,7 @@ void Notebook::load(){
         return;
     QByteArray input;
 
-    QFile fin("C:\\Users\\Aluno\\Downloads\\output.json");
+    QFile fin(QDir::currentPath() + "\\output.json");
     if(fin.open(QIODevice::ReadOnly)){
         input = fin.readAll();
         fin.close();
