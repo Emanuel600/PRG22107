@@ -93,6 +93,15 @@ void Shelf::load_books(){
     }
 }
 
+void Shelf::del(unsigned long long i){
+    vector<Notebook>::iterator it = _books.begin() + i;
+    _books.erase(it);
+    // Ineficiente, mas funciona
+    this->save();
+    _books.clear();
+    this->load_books();
+}
+
 void Shelf::showcase(){
     for (auto book : _books)
         book.show();

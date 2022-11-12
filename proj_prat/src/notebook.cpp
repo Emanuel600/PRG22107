@@ -68,6 +68,7 @@ void Notebook::load(){
                 } else uid++;
             }
         } else {
+            cout << "Erro ao tentar abrir o notebook" << endl;
             cerr << "Notebook não foi encontrado" << endl;
             return;
         }

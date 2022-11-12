@@ -16,10 +16,11 @@ public:
     ~Shelf();
 
     Notebook open(unsigned long long i) { _ind = i ; Notebook book = _books[i]; book.load() ; return book; }
-    void book(QString title) { Notebook book(title); _books.push_back(book); }
-    void book(Notebook book) {_books.push_back(book);}
+    Notebook book(QString title) { Notebook book(title); _books.push_back(book); return book; }
+    Notebook book(Notebook book) {_books.push_back(book); return book; }
 
     void edit_book(Notebook book){_books[_ind] = book;}
+    void del(unsigned long long i);
 
     /* IO */
     // Fecha Notebook
