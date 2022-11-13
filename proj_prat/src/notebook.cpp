@@ -75,6 +75,26 @@ void Notebook::load(){
         }
     }
 }
+
+QJsonObject Notebook::get_json(){
+    QJsonObject book_json;
+
+    QJsonArray note_arr;
+    QJsonObject note_obj;
+
+    for(vector<Note*>::iterator itn = _notes.begin(); itn!=_notes.end(); ++itn){
+        Note nota = **itn;
+        note_obj = nota.get_json();
+
+        note_arr.append(note_obj);
+    }
+
+    book_json["title"] = _title;
+    book_json["notes"] = note_arr;
+
+    return book_json;
+}
+
 // Fecha Notebook, Shelf responsável por salvar mudanças
 void Notebook::close(){
     for (auto note : _notes)
