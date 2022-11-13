@@ -31,6 +31,8 @@ public:
 
     void title(QString title) { _title = title; }
     QString title() {return _title;}
+
+    QJsonObject get_json();
     // Cria/adiciona notas
     void note(QString title);
     void note(QString title, QString cont);

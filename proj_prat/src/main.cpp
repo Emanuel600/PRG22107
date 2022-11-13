@@ -17,7 +17,7 @@ int main(){
     unsigned short choice;
 
     while (1){
-        cout << " ======================================= " << endl;
+        cout << " ================================================= " << endl;
         cout << "1 - Mostrar livros armazenados na estante" << endl;
         cout << "2 - Ler um dos livros armazenados na estante" << endl;
         cout << "3 - Criar um novo livro (WIP)" << endl;
@@ -25,6 +25,7 @@ int main(){
         cout << "5 - Deletar um livro (notas não serão salvas)" << endl;
         cout << "9 - Salvar todos os livros e notas" << endl;
         cout << "* - Sair do programa (salva automáticamente)" << endl;
+        cout << " ================================================= " << endl;
 
         cout << "Entre com sua escolha: ";
 
@@ -55,6 +56,7 @@ int main(){
             cin.ignore(INT_MAX, '\n');
             getline(cin, temp);
             tmp = temp.c_str();
+
             placeholder = shelf.book(tmp);
 
             cout << "WIP - menu para criar nota" << endl;

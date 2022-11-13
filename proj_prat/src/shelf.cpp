@@ -4,41 +4,23 @@
 // Salva notebooks em json
 void Shelf::save(){
     cout << "Saving shelf" << endl;
+
+    /* Temporários */
+    Note temp_nota;
+
     /* Objetos */
-    QJsonObject note;
     QJsonObject main;
-    QJsonObject notebook;
+    QJsonObject temp_obj;
 
     /* Arrays */
-    QJsonArray books;
-    QJsonArray title;
-    QJsonArray cont;
+    QJsonArray book_arr;
 
     for(vector<Notebook>::iterator it = _books.begin(); it!=_books.end(); ++it){
         Notebook book= *it;
         book.load();
-
-        vector<Note*> notes = book.notes();
-
-        for(vector<Note*>::iterator itn = notes.begin(); itn!=notes.end(); ++itn){
-            Note note= **itn;
-            title.push_back(note.title());
-            cont.push_back(note.content());
-        }
-
-        note["title"] = title;
-        note["content"] = cont;
-
-        // Limpar arrays
-        title = QJsonArray{};
-        cont = title;
-
-        notebook["title"] = book.title();
-        notebook["notes"] = note;
-
-        books.push_back(notebook);
+        book_arr.append(book.get_json());
     }
-    main["Notebook"] = books;
+    main["Notebook"] = book_arr;
 
     QByteArray output = QJsonDocument(main).toJson();
 
