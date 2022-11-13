@@ -16,7 +16,7 @@ public:
     ~Shelf();
 
     Notebook open(unsigned long long i) { _ind = i ; Notebook book = _books[i]; book.load() ; return book; }
-    Notebook book(QString title) { Notebook book(title); _books.push_back(book); return book; }
+    Notebook book(QString title) { Notebook book(title); book.uid(_books.size()) ; _books.push_back(book); return book; }
     Notebook book(Notebook book) {_books.push_back(book); return book; }
 
     void edit_book(Notebook book){_books[_ind] = book;}

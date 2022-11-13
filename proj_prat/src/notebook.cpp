@@ -48,21 +48,22 @@ void Notebook::load(){
         QJsonObject jason_obj = jason.object(); // Contains all saved notebooks
         QString str = "Notebook";
         if(jason_obj.contains(str)){ // Verifica que possui notebook salvo
-            QJsonArray book_jason = jason_obj[str].toArray();
+            QJsonArray book_arr = jason_obj[str].toArray();
             unsigned uid = 0;
             str = "notes";
-            for (auto book_auto : book_jason){
+            for (auto book_auto : book_arr){
                 if(uid == _uid){
                     QJsonObject book_obj = book_auto.toObject();
                     if(book_obj.contains(str)){
-                        QJsonObject note_obj = book_obj[str].toObject();
-                        QJsonArray  titles   = note_obj["title"].toArray();
-                        QJsonArray  cont     = note_obj["content"].toArray();
+                        QJsonArray note_arr = book_obj[str].toArray();
+                        for (QJsonValueRef note_ref : note_arr){
+                            QJsonObject note_obj = note_ref.toObject();
 
-                        int size = titles.size();
+                            QString title = note_obj["title"].toString();
+                            QString cont  = note_obj["content"].toString();
 
-                        for(int i = 0 ; i < size ; i++)
-                            this->note(titles.at(i).toString(), cont.at(i).toString());
+                            this->note(title, cont);
+                        }
                     }
                     return;
                 } else uid++;
