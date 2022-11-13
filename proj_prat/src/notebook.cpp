@@ -23,6 +23,12 @@ void Notebook::show(){
         cout << "\t- " << ((*iter)->title()).toStdString() << endl;
     }
 }
+
+void Notebook::del(unsigned int i){
+    vector<Note*>::iterator it = _notes.begin() + i;
+    _notes.erase(it);
+}
+
 void Notebook::load(){
     if (_notes.size() != 0) // Já está carregado
         return;
@@ -54,17 +60,20 @@ void Notebook::load(){
             for (auto book_auto : book_arr){
                 if(uid == _uid){
                     QJsonObject book_obj = book_auto.toObject();
+
+                    QJsonArray note_arr = book_obj[str].toArray();
+                    vector<Note*> temp_store(note_arr.size());
+                    short i = 0;
                     if(book_obj.contains(str)){
-                        QJsonArray note_arr = book_obj[str].toArray();
                         for (QJsonValueRef note_ref : note_arr){
                             QJsonObject note_obj = note_ref.toObject();
+                            Note* note_ptr = new Note(note_obj);
 
-                            QString title = note_obj["title"].toString();
-                            QString cont  = note_obj["content"].toString();
-
-                            this->note(title, cont);
+                            temp_store[i] = note_ptr;
                         }
                     }
+                    for (auto iter = temp_store.begin() ; iter != temp_store.end() ; iter++)
+                        this->note(*iter); // Referenciação remove vector::iterator
                     return;
                 } else uid++;
             }
