@@ -33,11 +33,12 @@ public:
     QString title() {return _title;}
 
     QJsonObject get_json();
-    // Cria/adiciona notas
+    // Cria/Remove notas
     void note(QString title);
     void note(QString title, QString cont);
     void note(Note* note) { _notes.push_back(note); }
     void note(vector<Note*> note) { _notes = note; }
+    void del (unsigned i);
 
     void show();
     void load();

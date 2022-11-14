@@ -17,6 +17,7 @@ public:
     Note() {}
     Note(QString title) {_title = title;}
     Note(QString title, QString cont) {_title = title; _contents = cont;}
+    Note(QJsonObject note_obj);
 
     ~Note() { cout << "Note {" << _title.toStdString() << "} has been destroyed" << endl; }
 
