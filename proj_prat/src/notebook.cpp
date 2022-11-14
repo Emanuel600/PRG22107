@@ -19,9 +19,9 @@ void Notebook::note(QString title, QString cont){
 
 void Notebook::show(){
     cout << "Notebook: " << _title.toStdString() << "\t(id: " << _uid << ')' << endl;
-    for (auto iter=_notes.begin(); iter!=_notes.end(); iter++){
-        cout << "\t- " << ((*iter)->title()).toStdString() << endl;
-    }
+    unsigned i = 0;
+    for (auto iter=_notes.begin(); iter!=_notes.end(); iter++)
+        cout << i++ << "\t- " << ((*iter)->title()).toStdString() << endl;
 }
 
 void Notebook::del(unsigned int i){
@@ -30,6 +30,7 @@ void Notebook::del(unsigned int i){
 }
 
 void Notebook::load(){
+    cout << "Loading notes for " << _title.toStdString() << " Notebook" << endl;
     if (_notes.size() != 0) // Já está carregado
         return;
     QByteArray input;
@@ -69,11 +70,11 @@ void Notebook::load(){
                             QJsonObject note_obj = note_ref.toObject();
                             Note* note_ptr = new Note(note_obj);
 
-                            temp_store[i] = note_ptr;
+                            temp_store[i++] = note_ptr;
                         }
                     }
                     for (auto iter = temp_store.begin() ; iter != temp_store.end() ; iter++)
-                        this->note(*iter); // Referenciação remove vector::iterator
+                        this->note(*iter);
                     return;
                 } else uid++;
             }

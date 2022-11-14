@@ -26,6 +26,8 @@ public:
     Notebook() {_title = "";}
     Notebook(QString title) { _title=title; }
 
+    ~Notebook() { cout << "Deleting " << _title.toStdString() << " Notebook" << endl; this->close(); }
+
     Note* open(unsigned i) {return _notes[i];}
     vector<Note*> notes() {return _notes;}
 

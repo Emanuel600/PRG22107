@@ -86,9 +86,11 @@ void Shelf::showcase(){
 }
 
 Shelf::~Shelf(){
+    cout << "~Shelf chamado" << endl;
     // Salva automaticamente quando o programa fecha
     this->save();
     // Deleta notas armazenadas na memoria
     for (auto book : _books)
         book.close();
+    cout << "~Shelf encerrado" << endl;
 }
