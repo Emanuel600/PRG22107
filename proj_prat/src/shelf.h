@@ -10,7 +10,7 @@ class Shelf{
     unsigned long long _ind; // Índice do Notebook que está sendo visualizado
 public:
     Shelf() {}
-    Shelf(QString title) {Notebook book(title); _books.push_back(book); }
+    Shelf(QString title) {Notebook book(title); book.uid(0) ; _books.push_back(book); }
     Shelf(Notebook book) { _books.push_back(book); }
 
     ~Shelf();
