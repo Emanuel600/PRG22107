@@ -146,7 +146,7 @@ int main(){
             }
 
             shelf.edit_book(placeholder_book);
-            shelf.reload();
+            shelf.reload(); // Resets note_ptr
             break;
         case 5:
             cout << "Entre com o índice que quer deletar" << endl;
@@ -155,7 +155,6 @@ int main(){
             cin.clear();
             cin  >> index;
             shelf.del(index);
-            shelf.reload(); // Reseta uid dos notebooks
             break;
         case 9:
             shelf.save();
