@@ -76,8 +76,17 @@ void Shelf::load_books(){
 }
 
 void Shelf::del(unsigned long long i){
+    while (!(i<_books.size())){
+        cout << "Index out of range, enter a vallid index: ";
+        cin.clear();
+        cin  >> i;
+        cout << endl;
+    }
     vector<Notebook>::iterator it = _books.begin() + i;
     _books.erase(it);
+
+    while (it != _books.end())
+        (it++)->uid(i++);
 }
 
 void Shelf::showcase(){
@@ -86,9 +95,10 @@ void Shelf::showcase(){
 }
 
 Shelf::~Shelf(){
+    cout << "~Shelf chamado" << endl;
     // Salva automaticamente quando o programa fecha
     this->save();
-    // Deleta notas armazenadas na memoria
-    for (auto book : _books)
-        book.close();
+    // Deleta notas armazenadas na memoria e notebooks
+    _books.clear();
+    cout << "~Shelf encerrado" << endl;
 }
