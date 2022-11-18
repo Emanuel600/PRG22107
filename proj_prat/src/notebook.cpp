@@ -1,15 +1,8 @@
 #include "notebook.h"
 
-void Notebook::note(QString title){
-    Note* note = new Note();
-
-    note->title(title);
-
-    _notes.push_back(note);
-}
 
 void Notebook::note(QString title, QString cont){
-    Note* note = new Note();
+    Plain_Note* note = new Plain_Note();
 
     note->title(title);
     note->content(cont);
@@ -68,7 +61,18 @@ void Notebook::load(){
                     if(book_obj.contains(str)){
                         for (QJsonValueRef note_ref : note_arr){
                             QJsonObject note_obj = note_ref.toObject();
-                            Note* note_ptr = new Note(note_obj);
+                            Note* note_ptr;
+                            switch (note_obj["type"].toString().toStdString()[0]){
+                            case 'p':
+                                note_ptr = new Plain_Note();
+                                break;
+                            case 'c':
+                                note_ptr = new Check_List();
+                                break;
+                            default:
+                                cout << "Fatal error when creating note" << endl;
+                                return;
+                            }
 
                             temp_store[i++] = note_ptr;
                         }
@@ -93,8 +97,8 @@ QJsonObject Notebook::get_json(){
     QJsonObject note_obj;
 
     for(vector<Note*>::iterator itn = _notes.begin(); itn!=_notes.end(); ++itn){
-        Note nota = **itn;
-        note_obj = nota.get_json();
+        Note* nota = *itn;
+        note_obj = nota->get_json();
 
         note_arr.append(note_obj);
     }
