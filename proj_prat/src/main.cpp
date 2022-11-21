@@ -13,9 +13,11 @@ int main(){
     string temp;
     QString tmp;
     unsigned index;
+
     Note* note_ptr = NULL;
-    Note placeholder_note;
-    Notebook placeholder_book;
+    Plain_Note* plain_ptr = new Plain_Note();
+    Check_List* clist_ptr = new Check_List();
+    Notebook* placeholder_book;
     unsigned short choice;
 
     while (1){
@@ -50,10 +52,10 @@ int main(){
             cin >> index;
 
             placeholder_book = shelf.open(index);
-            placeholder_book.load();
-            placeholder_book.show();
+            placeholder_book->load();
+            placeholder_book->show();
 
-            if (placeholder_book.notes().empty()){
+            if (placeholder_book->notes().empty()){
                 cout << "Livro está vazio" << endl;
                 break;
             }
@@ -61,10 +63,8 @@ int main(){
             cout << "Entre com a nota que quer abrir: ";
             cin.clear();
             cin  >> index;
-            placeholder_note = *(placeholder_book.notes()[index]);
-            cout << "Title: " << placeholder_note.title().toStdString() << endl;
-            cout << placeholder_note.content().toStdString() << endl;
-            cout << "Aperte qualquer tecla para fechar" << endl;
+            note_ptr = placeholder_book->notes()[index];
+            note_ptr->display();
 
             getchar();
             break;
@@ -88,17 +88,15 @@ int main(){
             getline(cin, temp);
             tmp = temp.c_str();
 
-            note_ptr = new Note();
-            note_ptr->title(tmp);
+            plain_ptr->title(tmp);
             // Não funciona como deve, mas vai ser concertado com a GUI
             cout << "Entre com o conteúdo da nota: ";
             cin.clear();
             getline(cin, temp);
             tmp = temp.c_str();
-            note_ptr->content(tmp);
+            plain_ptr->content(tmp);
 
-            placeholder_book.note(note_ptr);
-            shelf.edit_book(placeholder_book);
+            placeholder_book->note(plain_ptr);
             shelf.reload();
             break;
         case 4:
@@ -107,46 +105,72 @@ int main(){
             cin.clear();
             cin >> index;
             placeholder_book = shelf.open(index);
-            placeholder_book.load();
-            placeholder_book.show();
+            placeholder_book->load();
+            placeholder_book->show();
 
-            cout << "1 - Criar uma nota" << endl;
-            cout << "2 - Deletar um nota" << endl;
+            cout << "1 - Criar uma nota simples" << endl;
+            cout << "2 - Criar uma lista de tarefas" << endl;
+            cout << "3 - Deletar uma nota/lista qualquer" << endl;
+            cout << "4 - Editar uma nota/lista qualquer" << endl;
             cout << "* - Cancelar" << endl;
 
             cin.clear();
             cin  >> choice;
+            cin.clear();
 
             switch(choice){
             case 1:
+                cin  >> choice;
+
                 cout << "Entre com o título da nota: ";
                 cin.clear();
                 cin.ignore(INT_MAX, '\n');
                 getline(cin, temp);
                 tmp = temp.c_str();
 
-                note_ptr = new Note();
-                note_ptr->title(tmp);
-                // Não funciona como deve, mas vai ser concertado com a GUI
+                plain_ptr->title(tmp);
+
                 cout << "Entre com o conteúdo da nota: ";
                 cin.clear();
                 getline(cin, temp);
                 tmp = temp.c_str();
-                note_ptr->content(tmp);
-                placeholder_book.note(note_ptr);
+                plain_ptr->content(tmp);
+                placeholder_book->note(plain_ptr);
+                shelf.reload();
                 break;
             case 2:
-                cout << "Entre com a nota que quer deletar: ";
+                cout << "Entre com o título da nota: ";
+                cin.ignore(INT_MAX, '\n');
+                getline(cin, temp);
+                tmp = temp.c_str();
+
+                clist_ptr->title(tmp);
+
+                cout << "Entre com um item:" << endl;
+
                 cin.clear();
+                getline(cin, temp);
+                tmp = temp.c_str();
+
+                clist_ptr->add_item(tmp);
+                placeholder_book->note(clist_ptr);
+                shelf.reload();
+                break;
+            case 3:
+                cout << "Entre com a nota que quer deletar: ";
                 cin  >> index;
-                placeholder_book.del(index);
+                placeholder_book->del(index);
+                break;
+            case 4:
+                cout << "Entre com a nota que quer editar: " << endl;
+                cin  >> choice;
+                note_ptr = placeholder_book->open(choice);
+                note_ptr->edit();
+                shelf.reload();
                 break;
             default:
                 break;
             }
-
-            shelf.edit_book(placeholder_book);
-            shelf.reload(); // Resets note_ptr
             break;
         case 5:
             cout << "Entre com o índice que quer deletar" << endl;

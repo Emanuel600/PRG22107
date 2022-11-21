@@ -4,10 +4,6 @@
 // Salva notebooks em json
 void Shelf::save(){
     cout << "Saving shelf" << endl;
-
-    /* Temporários */
-    Note temp_nota;
-
     /* Objetos */
     QJsonObject main;
     QJsonObject temp_obj;
@@ -15,10 +11,12 @@ void Shelf::save(){
     /* Arrays */
     QJsonArray book_arr;
 
-    for(vector<Notebook>::iterator it = _books.begin(); it!=_books.end(); ++it){
-        Notebook book= *it;
-        book.load();
-        book_arr.append(book.get_json());
+    for(vector<Notebook*>::iterator it = _books.begin(); it!=_books.end(); ++it){
+        Notebook* book= *it;
+        book->load();
+
+        temp_obj = book->get_json();
+        book_arr.append(temp_obj);
     }
     main["Notebook"] = book_arr;
 
@@ -57,19 +55,22 @@ void Shelf::load_books(){
         QJsonObject jason_obj = jason.object(); // Contains all saved notebooks
         QString str = "Notebook";
         if(jason_obj.contains(str)){ // Verifica que possui notebook salvo
-            QJsonArray book_jason = jason_obj[str].toArray();
+            QJsonArray book_arr = jason_obj[str].toArray();
             unsigned uid = 0;
 
-            for (auto book_auto : book_jason){
-                Notebook book;
+            _books.resize(book_arr.size());
+
+            unsigned i = 0;
+            for (auto book_auto : book_arr){
+                Notebook* book = new Notebook();
 
                 QJsonObject book_obj = book_auto.toObject();
                 QString     title    = book_obj["title"].toString();
 
-                book.title(title);
-                book.uid(uid++);    // Como são salvos e carregados sempre da mesma forma, isto funciona como id único sem modificar o .json
+                book->title(title);
+                book->uid(uid++);    // Como são salvos e carregados sempre da mesma forma, isto funciona como id único sem modificar o .json
 
-                _books.push_back(book);
+                _books[i++] = book;
             }
         }
     }
@@ -82,16 +83,16 @@ void Shelf::del(unsigned long long i){
         cin  >> i;
         cout << endl;
     }
-    vector<Notebook>::iterator it = _books.begin() + i;
+    vector<Notebook*>::iterator it = _books.begin() + i;
     _books.erase(it);
 
     while (it != _books.end())
-        (it++)->uid(i++);
+        (*it++)->uid(i++);
 }
 
 void Shelf::showcase(){
     for (auto book : _books)
-        book.show();
+        book->show();
 }
 
 Shelf::~Shelf(){
