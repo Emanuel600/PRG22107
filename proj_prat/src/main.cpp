@@ -18,7 +18,6 @@ int main(){
     Plain_Note* plain_ptr = new Plain_Note();
     Check_List* clist_ptr = new Check_List();
     Notebook* placeholder_book;
-
     unsigned short choice;
 
     while (1){
@@ -64,9 +63,9 @@ int main(){
             cout << "Entre com a nota que quer abrir: ";
             cin.clear();
             cin  >> index;
-
             note_ptr = placeholder_book->notes()[index];
             note_ptr->display();
+
             getchar();
             break;
         case 3:
@@ -90,7 +89,7 @@ int main(){
             tmp = temp.c_str();
 
             plain_ptr->title(tmp);
-
+            // Não funciona como deve, mas vai ser concertado com a GUI
             cout << "Entre com o conteúdo da nota: ";
             cin.clear();
             getline(cin, temp);
