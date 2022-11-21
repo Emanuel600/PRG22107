@@ -24,7 +24,7 @@
         Uma lista que pode ser modificada pelo usuário com checkmarks e notas.
         
         A implementação pode ser feita tratando cada nota como um objeto contendo um valor denominando
-      se esta é uma checklist ou uma nota comum, além do texto contido nela e se um ítem foi da checklist
+      se esta é uma checklist ou uma nota comum, além do texto contido nela e se um ítem da checklist
       foi completado.
       
         Os elementos e seus conteúdos podem ser salvos em um arquivo .jsn
