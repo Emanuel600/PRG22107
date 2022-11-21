@@ -13,8 +13,8 @@ int main(){
     string temp;
     QString tmp;
     unsigned index;
-    Note* note_ptr = NULL;
-    Note placeholder_note;
+    Plain_Note* note_ptr = NULL;
+    Plain_Note placeholder_note; //  Temporary "solution"
     Notebook placeholder_book;
     unsigned short choice;
 
@@ -61,7 +61,8 @@ int main(){
             cout << "Entre com a nota que quer abrir: ";
             cin.clear();
             cin  >> index;
-            placeholder_note = *(placeholder_book.notes()[index]);
+            /* NEEDS TO BE FIXED (WIP)*/
+            //placeholder_note = *(placeholder_book.notes()[index]);
             cout << "Title: " << placeholder_note.title().toStdString() << endl;
             cout << placeholder_note.content().toStdString() << endl;
             cout << "Aperte qualquer tecla para fechar" << endl;
@@ -88,7 +89,7 @@ int main(){
             getline(cin, temp);
             tmp = temp.c_str();
 
-            note_ptr = new Note();
+            note_ptr = new Plain_Note();
             note_ptr->title(tmp);
             // Não funciona como deve, mas vai ser concertado com a GUI
             cout << "Entre com o conteúdo da nota: ";
@@ -125,7 +126,7 @@ int main(){
                 getline(cin, temp);
                 tmp = temp.c_str();
 
-                note_ptr = new Note();
+                note_ptr = new Plain_Note();
                 note_ptr->title(tmp);
                 // Não funciona como deve, mas vai ser concertado com a GUI
                 cout << "Entre com o conteúdo da nota: ";

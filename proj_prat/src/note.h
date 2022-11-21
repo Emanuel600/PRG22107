@@ -2,6 +2,7 @@
 #include <vector>
 #include <QString>
 #include <iostream>
+#include <QJsonArray>
 #include <QJsonObject>
 
 using namespace std;
@@ -10,24 +11,41 @@ using namespace std;
 #define NOTE_H
 
 class Note{
-private:
+protected:
     QString _title;
-    QString _contents; // Pode ser feita em markdown no QT
 public:
     Note() {}
     Note(QString title) {_title = title;}
-    Note(QString title, QString cont) {_title = title; _contents = cont;}
     Note(QJsonObject note_obj);
 
-    ~Note() { cout << "Note {" << _title.toStdString() << "} has been destroyed" << endl; }
+    virtual ~Note() { cout << "Note {" << _title.toStdString() << "} has been destroyed" << endl; }
 
     void title(QString title) { _title = title; }
-    void content(QString contents) { _contents = contents; }
 
     QString title() { return _title; }
-    QString content() { return _contents;}
+
+    virtual QJsonObject get_json() = 0;
+    virtual string display() = 0;
+};
+
+class Plain_Note: public Note{
+private:
+    QString _content;
+public:
+    void content(QString cont) {_content = cont;}
+
+    QString content() {return _content;}
 
     QJsonObject get_json();
+    string display() {return "";}
+};
+
+class Check_List: public Note{
+private:
+    vector<QString> _content;
+public:
+    QJsonObject get_json();
+    string display() {return "";}
 };
 
 #endif // NOTE_H

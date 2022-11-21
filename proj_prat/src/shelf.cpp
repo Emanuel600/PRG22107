@@ -4,10 +4,6 @@
 // Salva notebooks em json
 void Shelf::save(){
     cout << "Saving shelf" << endl;
-
-    /* Temporários */
-    Note temp_nota;
-
     /* Objetos */
     QJsonObject main;
     QJsonObject temp_obj;
