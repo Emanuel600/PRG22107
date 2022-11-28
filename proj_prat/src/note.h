@@ -55,7 +55,14 @@ public:
 
     void add_item(QString item);
     void change(unsigned i, QString item) {_content[i] = item;}
+    void clear(){_content.clear() ; _checked.clear(); }
     void del(unsigned i);
+
+    void content(vector<QString> cont) {_content = cont;}
+    void checked(vector<bool> check) {_checked = check;}
+
+    vector<QString> content() {return _content;}
+    vector<bool> checked() {return _checked;}
 
     QJsonObject get_json();
     void display();

@@ -1,14 +1,18 @@
 #include <clocale>
 #include <limits.h>
+#include <QApplication>
 
 #include "shelf.h"
 
-int main(){
+int main(int argc, char *argv[]){
     // init
-    Shelf shelf;
-    shelf.load_books();
     if (std::setlocale(LC_ALL, "portuguese") == NULL) // Não funciona
         cerr << "Erro ao localizar o programa, erros de acento são esperados" << endl;
+
+    QApplication a(argc, argv);
+    Shelf shelf;
+    shelf.show();/*
+
     // menu
     string temp;
     QString tmp;
@@ -30,6 +34,8 @@ int main(){
         cout << "9 - Salvar todos os livros e notas" << endl;
         cout << "* - Sair do programa (salva automáticamente)" << endl;
         cout << " ================================================= " << endl;
+
+        clist_ptr->clear();
 
         cout << "Entre com sua escolha: ";
 
@@ -97,7 +103,6 @@ int main(){
             plain_ptr->content(tmp);
 
             placeholder_book->note(plain_ptr);
-            shelf.reload();
             break;
         case 4:
             cout << "Entre com o índice que quer modificar" << endl;
@@ -136,7 +141,6 @@ int main(){
                 tmp = temp.c_str();
                 plain_ptr->content(tmp);
                 placeholder_book->note(plain_ptr);
-                shelf.reload();
                 break;
             case 2:
                 cout << "Entre com o título da nota: ";
@@ -154,7 +158,6 @@ int main(){
 
                 clist_ptr->add_item(tmp);
                 placeholder_book->note(clist_ptr);
-                shelf.reload();
                 break;
             case 3:
                 cout << "Entre com a nota que quer deletar: ";
@@ -166,7 +169,6 @@ int main(){
                 cin  >> choice;
                 note_ptr = placeholder_book->open(choice);
                 note_ptr->edit();
-                shelf.reload();
                 break;
             default:
                 break;
@@ -185,7 +187,10 @@ int main(){
             break;
         default:
             cout << "Salvando e terminando programa" << endl;
+            delete clist_ptr;
+            delete plain_ptr;
             return 0;
         }
-    }
+    }*/
+    return a.exec();
 }
