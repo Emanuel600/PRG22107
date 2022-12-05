@@ -2,10 +2,10 @@
 #include <QInputDialog>
 #include <QMainWindow>
 #include <QTextEdit>
-#include <QMenuBar>
 
 /* Modular Includes */
 #include "notebook.h"
+#include "shelftree.h"
 #include "shelflist.h"
 
 #ifndef SHELF_H
@@ -29,11 +29,14 @@ public:
 
     Notebook* book(QString title) {
         Notebook* book = new Notebook(title);
+        book->note("Teste", "I won't even be able to see this");
+
         _ind = _books.size();
         book->uid(_ind);
         _books.push_back(book);
 
         Book_List->addItem(book->title());
+        Book_Tree->add_book(book);
         return book;
     }
 
@@ -84,6 +87,7 @@ private:
     QTextEdit* Text_Editor;
     ShelfList* Book_List;
     ShelfList* Note_List;
+    Shelftree* Book_Tree;
 
     QMenu* fileMenu;
     QAction* newAct;

@@ -7,7 +7,9 @@ Shelf::Shelf(QWidget* parent) : QMainWindow(parent){
 
     Book_List = new ShelfList();
     Note_List = new ShelfList();
-    setCentralWidget(Book_List);
+
+    Book_Tree = new Shelftree();
+    setCentralWidget(Book_Tree);
 
     connect(Book_List, &QListWidget::itemDoubleClicked, this, &Shelf::item_dclicked);
     this->CreateBActions();
@@ -149,10 +151,12 @@ void Shelf::load_books(){
 
                 book->uid(uid);    // Como são salvos e carregados sempre da mesma forma, isto funciona como id único sem modificar o .json
                 _books[uid++] = book;
+                Book_Tree->add_book(book);
             }
         }
     }
     Book_List->addItems(this->list());
+    Book_Tree->expandAll();
 }
 
 QStringList Shelf::list(){

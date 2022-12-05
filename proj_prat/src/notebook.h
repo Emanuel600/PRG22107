@@ -36,6 +36,8 @@ public:
     void title(QString title) { _title = title; }
     QString title() {return _title;}
 
+    QList<QString> list_notes();
+
     QJsonObject get_json();
     // Cria/Remove notas
     void note(QString title, QString cont);

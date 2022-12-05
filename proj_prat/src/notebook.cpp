@@ -45,6 +45,7 @@ Notebook::Notebook(QJsonObject book_obj){
     QJsonArray note_arr = book_obj["notes"].toArray();
     _title = book_obj["title"].toString();
 
+
     if (!note_arr.empty()){
         _notes.resize(unsigned(note_arr.size()));
         unsigned i = 0;
@@ -67,6 +68,14 @@ Notebook::Notebook(QJsonObject book_obj){
             }
         } else cout << "Empty note array" << endl;
     return;
+}
+
+QList<QString> Notebook::list_notes(){
+    QList<QString> list;
+    for(auto note : _notes)
+        list << note->title();
+
+    return list;
 }
 
 QJsonObject Notebook::get_json(){
