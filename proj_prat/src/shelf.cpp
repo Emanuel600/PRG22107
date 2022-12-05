@@ -5,26 +5,20 @@
 Shelf::Shelf(QWidget* parent) : QMainWindow(parent){
     _ind = 0;
 
-    Book_List = new ShelfList();
-    Note_List = new ShelfList();
-
     Book_Tree = new Shelftree();
     setCentralWidget(Book_Tree);
 
-    connect(Book_List, &QListWidget::itemDoubleClicked, this, &Shelf::item_dclicked);
-    this->CreateBActions();
-    this->CreateMenus();
+    //connect(this, &Shelf::Update, Book_Tree, &Shelftree::Tree_Changed);
 
     this->load_books();
 }
+/* Slots */
+/* Menu de Livros */
+void Shelf::Rename_Book(unsigned index){}
+void Shelf::Delete_Book(unsigned index){this->del(index);}
+void Shelf::Append_Note(unsigned index){}
+/* Menu de Notas */
 
-void Shelf::item_dclicked(QListWidgetItem*item){
-    _ind = unsigned(Book_List->get_row(item));
-    this->load_notes();
-
-    this->CreateNActions();
-    setCentralWidget(Note_List);
-}
 // Ações do livro
 void Shelf::CreateBActions(){
     newAct = new QAction(tr("&Novo livro"), this);
@@ -74,8 +68,6 @@ void Shelf::create_note(){
     nota->content(input);
 
     _books[_ind]->note(nota);
-
-    Note_List->addItem(nota->title());
 }
 Notebook* Shelf::create(){
     bool ok;
@@ -155,7 +147,6 @@ void Shelf::load_books(){
             }
         }
     }
-    Book_List->addItems(this->list());
     Book_Tree->expandAll();
 }
 
@@ -166,14 +157,6 @@ QStringList Shelf::list(){
         list << item->title();
 
     return list;
-}
-// Não é muito eficiente, seria melhor chamar no própio construtor
-void Shelf::load_notes(){
-    Note_List->clear();
-    QStringList list;
-
-    for (auto note : _books[_ind]->notes())
-        Note_List->addItem(note->title());
 }
 
 void Shelf::del(unsigned long long i){

@@ -34,8 +34,6 @@ public:
         _ind = _books.size();
         book->uid(_ind);
         _books.push_back(book);
-
-        Book_List->addItem(book->title());
         Book_Tree->add_book(book);
         return book;
     }
@@ -44,13 +42,13 @@ public:
         _ind = _books.size();
         book.uid(_ind) ;
         _books.push_back(&book);
-        Book_List->addItem(book.title());
+        Book_Tree->add_book(&book);
     }
 
     void book(Notebook* book) {
         _ind = _books.size(); book->uid(_ind);
         _books.push_back(book);
-        Book_List->addItem(book->title());
+        Book_Tree->add_book(book);
     }
 
     void del(unsigned long long i);
@@ -67,16 +65,20 @@ public:
 
     /* IO */
     // Fecha Notebook
-    void close(){ this->save() ; _books[_ind]->close(); if (Note_List) delete Note_List; }
+    void close(){ this->save() ; _books[_ind]->close();}
     // Cria Notebooks a partir de um arquivo
     void load_books();
     // Salva Notebooks a partir em um arquivo
     void save();
     // Imprime notebooks contidos em uma shelf
     void showcase();
-
 private slots:
-    void item_dclicked(QListWidgetItem*item);
+    /* Chamados quando Book_Tree é modificada */
+    /* Menu de Livros */
+    void Rename_Book(unsigned index);
+    void Delete_Book(unsigned index);
+    void Append_Note(unsigned index);
+    /* Menu de Notas */
 private:
     void CreateMenus();
     // Acções dos livros
@@ -85,8 +87,6 @@ private:
     void CreateNActions();
 
     QTextEdit* Text_Editor;
-    ShelfList* Book_List;
-    ShelfList* Note_List;
     Shelftree* Book_Tree;
 
     QMenu* fileMenu;

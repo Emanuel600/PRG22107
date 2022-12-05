@@ -17,22 +17,35 @@ public:
 private slots:
     void toggle();
 
-    void Edit();
-    void Delete();
-    void CreateNote();
+    void EditBook();
+    void DeleteBook();
+    void NewNote();
 
     void ShowContextMenu(const QPoint &);
+signals:
+    // Envia sinal a shelf (parente) que foi modificada
+    void Book_Renamed(unsigned index) {}
+    void Book_Deleted(unsigned index) {}
+    void Note_Created(unsigned index) {}
 private:
     // Right-Click menu
     void CreateMenu();
-    // Actions of the menu
-    void CreateActions();
+    // Actions of the menu (books)
+    void CreateBookActions();
+    // Actions of the menu (notes)
+    void CreateNoteActions();
 
-    QAction* EditItem;
-    QAction* DeleteItem;
-    QAction* CreateChild;
+    // Aux methods
+    void Edit_Book(QTreeWidgetItem* book_item);
 
-    QList<QAction*> RightClickActions;
+    QAction* EditBookItem;
+    QAction* DeleteBookItem;
+    QAction* NewNoteAction;
+
+    QAction* EditNoteItem;
+    QAction* DeleteNoteItem;
+
+    QList<QAction*> CurrentActions;
 
     QMenu* RightClickMenu;
 };
