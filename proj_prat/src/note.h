@@ -25,6 +25,7 @@ public:
     QString title() { return _title; }
 
     virtual QJsonObject get_json() = 0;
+    virtual QString get_string() = 0;
     virtual void display() = 0;
     virtual void edit() = 0;
 };
@@ -41,6 +42,7 @@ public:
     QString content() {return _content;}
 
     QJsonObject get_json();
+    QString get_string();
     void display();
     void edit();
 };
@@ -65,6 +67,7 @@ public:
     vector<bool> checked() {return _checked;}
 
     QJsonObject get_json();
+    QString get_string();
     void display();
     void edit();
 };

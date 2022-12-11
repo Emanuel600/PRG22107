@@ -5,34 +5,26 @@ Shelftree::Shelftree(){
 
     this->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(this, &QWidget::customContextMenuRequested, this, &Shelftree::ShowContextMenu);
-    this->setHeaderLabel("Livros");
+    connect(this, &QTreeWidget::itemDoubleClicked, this, &Shelftree::OpenNote);
 }
 
 void Shelftree::ShowContextMenu(const QPoint & point){
     QMenu contextMenu(this);
 
-    QTreeWidgetItem* item = this->currentItem();
-
-    int header_raw = -1;
-
     if(this->currentItem()->parent()){
         CreateNoteActions();
 
-        header_raw = item->parent()->indexOfChild(item);
+        connect(EditNoteItem, &QAction::triggered, this, &Shelftree::EditNote);
+        connect(DeleteNoteItem, &QAction::triggered, this, &Shelftree::DeleteNote);
     }
     else{
         CreateBookActions();
 
-        header_raw = this->indexOfTopLevelItem(item);
-
         connect(NewNoteAction, &QAction::triggered, this, &Shelftree::NewNote);
+        connect(NewListAction, &QAction::triggered, this, &Shelftree::NewList);
         connect(EditBookItem, &QAction::triggered, this, &Shelftree::EditBook);
         connect(DeleteBookItem, &QAction::triggered, this, &Shelftree::DeleteBook);
     }
-
-    QString header = QString::number(header_raw);
-
-    this->setHeaderLabel(header);
 
     contextMenu.addActions(CurrentActions);
 
@@ -40,6 +32,7 @@ void Shelftree::ShowContextMenu(const QPoint & point){
 }
 
 /* Book Related */
+/* Signals */
 void Shelftree::EditBook(){
     QTreeWidgetItem* item = this->currentItem();
     unsigned mod_index = unsigned(this->indexOfTopLevelItem(item));
@@ -58,6 +51,46 @@ void Shelftree::NewNote(){
 
     emit Note_Created(mod_index);
 }
+void Shelftree::NewList(){
+    QTreeWidgetItem* item = this->currentItem();
+    unsigned mod_index = unsigned(this->indexOfTopLevelItem(item));
+
+    emit List_Created(mod_index);
+}
+void Shelftree::OpenNote(){
+    QTreeWidgetItem* child  = this->currentItem();
+    QTreeWidgetItem* parent = child->parent();
+    if (!parent)
+        return;
+
+    unsigned bx = this->indexOfTopLevelItem(parent);
+    unsigned nx = parent->indexOfChild(child);
+
+    emit Note_Opened(bx, nx);
+}
+void Shelftree::EditNote(){
+    QTreeWidgetItem* child  = this->currentItem();
+    QTreeWidgetItem* parent = child->parent();
+    if (!parent)
+        return;
+
+    unsigned bx = this->indexOfTopLevelItem(parent);
+    unsigned nx = parent->indexOfChild(child);
+
+    emit Note_Edited(bx, nx);
+}
+void Shelftree::DeleteNote(){
+    QTreeWidgetItem* child = this->currentItem();
+    QTreeWidgetItem* parent = child->parent();
+    if (!parent)
+        return;
+
+    unsigned bx = this->indexOfTopLevelItem(parent);
+    unsigned nx = parent->indexOfChild(child);
+
+    emit Note_Deleted(bx, nx);
+}
+/* Actions */
 void Shelftree::CreateBookActions(){
     CurrentActions.clear();
 
@@ -70,7 +103,10 @@ void Shelftree::CreateBookActions(){
     NewNoteAction = new QAction();
     NewNoteAction->setText("Criar nova nota");
 
-    CurrentActions << EditBookItem << DeleteBookItem << NewNoteAction;
+    NewListAction = new QAction();
+    NewListAction->setText("Criar nova lista");
+
+    CurrentActions << EditBookItem << DeleteBookItem << NewNoteAction << NewListAction;
 }
 
 /* Note Related */
@@ -85,7 +121,6 @@ void Shelftree::CreateNoteActions(){
 
     CurrentActions << EditNoteItem << DeleteNoteItem;
 }
-
 
 void Shelftree::add_list(QList<QString> list){
     QTreeWidgetItem* item_ptr = new QTreeWidgetItem(list);

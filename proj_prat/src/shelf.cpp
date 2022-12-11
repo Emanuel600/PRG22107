@@ -6,21 +6,77 @@ Shelf::Shelf(QWidget* parent) : QMainWindow(parent){
     _ind = 0;
 
     Book_Tree = new Shelftree();
-    setCentralWidget(Book_Tree);
+    Text_Editor = new QTextEdit();
+    setCentralWidget(Text_Editor);
+    Text_Editor->setReadOnly(1);
 
-    //connect(this, &Shelf::Update, Book_Tree, &Shelftree::Tree_Changed);
+    connect(Book_Tree, &Shelftree::Book_Renamed, this, &Shelf::Rename_Book);
+    connect(Book_Tree, &Shelftree::Book_Deleted, this, &Shelf::Delete_Book);
+    connect(Book_Tree, &Shelftree::Note_Created, this, &Shelf::Append_Note);
+    connect(Book_Tree, &Shelftree::List_Created, this, &Shelf::Append_List);
+    connect(Book_Tree, &Shelftree::Note_Opened, this, &Shelf::Open_Note);
+
+    this->CreateActions();
+    this->CreateMenus();
+    this->CreateDock();
 
     this->load_books();
 }
 /* Slots */
-/* Menu de Livros */
-void Shelf::Rename_Book(unsigned index){}
+/* Livros */
+void Shelf::Rename_Book(unsigned index){
+    Notebook* book = _books[index];
+    bool ok;
+    QString input = QInputDialog::getText(this, tr("Renomear livro"),
+                                             tr("Título:"), QLineEdit::Normal,
+                                             book->title(), &ok);
+    book->title(input);
+}
 void Shelf::Delete_Book(unsigned index){this->del(index);}
-void Shelf::Append_Note(unsigned index){}
-/* Menu de Notas */
+void Shelf::Append_Note(unsigned index){
+    Notebook* book = _books[index];
+    bool ok;
+    QString input = QInputDialog::getText(this, tr("Criar nova nota"),
+                                             tr("Nome da nota:"), QLineEdit::Normal,
+                                             tr("Título"), &ok);
+    Plain_Note* note_ptr = new Plain_Note();
+    note_ptr->title(input);
+    book->note(note_ptr);
+}
+void Shelf::Append_List(unsigned index){
+    Notebook* book = _books[index];
+    bool ok;
+    QString input = QInputDialog::getText(this, tr("Criar nova lista"),
+                                             tr("Nome da lista:"), QLineEdit::Normal,
+                                             tr("Título"), &ok);
+    Check_List* note_ptr = new Check_List();
+    note_ptr->title(input);
+    book->note(note_ptr);
+}
+/* Notas */
+void Shelf::Open_Note(unsigned bx, unsigned nx){
+    Note* note_ptr = _books[bx]->notes()[nx];
+    QString display = note_ptr->get_string();
 
+    Text_Editor->setMarkdown(display);
+    setCentralWidget(Text_Editor);
+}
+void Shelf::Update_Note(unsigned bx, unsigned nx){
+    Note* note_ptr = _books[bx]->notes()[nx];
+    QString raw_text = Text_Editor->toMarkdown();
+
+    QStringList split_text = raw_text.split("\n");
+    QString title = split_text[0];
+
+    note_ptr->title(title);
+}
+void Shelf::Delete_Note(unsigned bx, unsigned nx){
+    vector<Note*> notes = _books[bx]->notes();
+    vector<Note*>::iterator item = notes.begin() + nx;
+    notes.erase(item);
+}
 // Ações do livro
-void Shelf::CreateBActions(){
+void Shelf::CreateActions(){
     newAct = new QAction(tr("&Novo livro"), this);
     newAct->setShortcuts(QKeySequence::New);
     newAct->setStatusTip(tr("Criar um livro novo"));
@@ -35,23 +91,23 @@ void Shelf::CreateBActions(){
     connect(saveAct, &QAction::triggered, this, &Shelf::save);
     ActionList << saveAct;
 }
-// Ações das notas
-void Shelf::CreateNActions(){
-    disconnect(newAct, &QAction::triggered, this, &Shelf::create);
-    disconnect(newAct, &QAction::triggered, this, &Shelf::create_note);
 
-    newAct = ActionList.first();
-    newAct->setText("Criar Nota");
-    newAct->setStatusTip(tr("Criar uma nova nota"));
-
-    connect(newAct, &QAction::triggered, this, &Shelf::create_note);
-}
 // Cria os menus
 void Shelf::CreateMenus(){
     fileMenu = menuBar()->addMenu(tr("&File"));
 
     fileMenu->addActions(ActionList);
 }
+
+void Shelf::CreateDock(){
+    QDockWidget* dock = new QDockWidget(tr("Livros"), this);
+    dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    dock->setWidget(Book_Tree);
+    dock->setAcceptDrops(0);
+
+    addDockWidget(Qt::LeftDockWidgetArea, dock);
+}
+
 // Cria uma nota
 void Shelf::create_note(){
     bool ok;
@@ -60,12 +116,6 @@ void Shelf::create_note(){
                                              tr("Título"), &ok);
     Plain_Note* nota = new Plain_Note();
     nota->title(input);
-
-    input = QInputDialog::getText(this, tr("Criar nova nota"),
-                                       tr("Conteúdo:"), QLineEdit::Normal,
-                                       tr("Conteúdo"), &ok);
-
-    nota->content(input);
 
     _books[_ind]->note(nota);
 }

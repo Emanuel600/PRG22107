@@ -20,6 +20,13 @@ QJsonObject Plain_Note::get_json(){
     return note_json;
 }
 
+QString Plain_Note::get_string(){
+    QString string = " #" + _title + "\n\n";
+    string += _content;
+
+    return string;
+}
+
 void Plain_Note::display(){
     cout << "Title: " << _title.toStdString() << endl;
     cout << "---\n" << _content.toStdString() << endl;
@@ -87,6 +94,23 @@ QJsonObject Check_List::get_json(){
     note_json["checked"] = checked;
 
     return note_json;
+}
+
+QString Check_List::get_string(){
+    QString string = _title + "\n\n";
+
+    unsigned i = 0;
+
+    while (i < _checked.size()){
+        string += " - [";
+        if (_checked[i])
+            string += "x";
+        else
+            string += " ";
+        string += "] " + _content[i++] + "\n";
+    }
+
+    return string;
 }
 
 void Check_List::display(){

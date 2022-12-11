@@ -1,5 +1,6 @@
 /* System Includes */
 #include <QInputDialog>
+#include <QDockWidget>
 #include <QMainWindow>
 #include <QTextEdit>
 
@@ -29,7 +30,6 @@ public:
 
     Notebook* book(QString title) {
         Notebook* book = new Notebook(title);
-        book->note("Teste", "I won't even be able to see this");
 
         _ind = _books.size();
         book->uid(_ind);
@@ -74,17 +74,23 @@ public:
     void showcase();
 private slots:
     /* Chamados quando Book_Tree é modificada */
-    /* Menu de Livros */
+    /* Livros */
     void Rename_Book(unsigned index);
     void Delete_Book(unsigned index);
     void Append_Note(unsigned index);
-    /* Menu de Notas */
+    void Append_List(unsigned index);
+    /* Notas/Listas */
+    void Open_Note(unsigned bx, unsigned nx);
+    void Update_Note(unsigned bx, unsigned nx);
+    void Delete_Note(unsigned bx, unsigned nx);
 private:
+    /* Criar Componentes da GUI */
+    // Dock
+    void CreateDock();
+    // Menu
     void CreateMenus();
-    // Acções dos livros
-    void CreateBActions();
-    // Ações das notas
-    void CreateNActions();
+    // Ações
+    void CreateActions();
 
     QTextEdit* Text_Editor;
     Shelftree* Book_Tree;
