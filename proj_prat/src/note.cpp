@@ -1,5 +1,4 @@
 #include "note.h"
-
 /* Note */
 Note::~Note(){
     cout << "Note {" << _title.toStdString() << "} has been destroyed" << endl;
@@ -18,6 +17,16 @@ QJsonObject Plain_Note::get_json(){
     note_json["contents"] = _content;
 
     return note_json;
+}
+
+QStringList Plain_Note::list_content(){
+    QStringList* list = new QStringList();
+    list->append(_content);
+    return *list;
+}
+
+QString Plain_Note::get_string(){
+    return _content;
 }
 
 void Plain_Note::display(){
@@ -87,6 +96,29 @@ QJsonObject Check_List::get_json(){
     note_json["checked"] = checked;
 
     return note_json;
+}
+
+QString Check_List::get_string(){
+    QString string;
+    unsigned i = 0;
+
+    while (i < _checked.size()){
+        string += " - [";
+        if (_checked[i])
+            string += "x";
+        else
+            string += " ";
+        string += "] " + _content[i++] + "\n";
+    }
+
+    return string;
+}
+
+QStringList Check_List::list_content(){
+    QStringList* list = new QStringList();
+    for (auto item : _content)
+        list->append(item);
+    return *list;
 }
 
 void Check_List::display(){

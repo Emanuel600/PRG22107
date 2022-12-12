@@ -10,6 +10,25 @@ void Notebook::note(QString title, QString cont){
     _notes.push_back(note);
 }
 
+void Notebook::note(Plain_Note* note_ptr){
+    Plain_Note* note = new Plain_Note();
+    // Preenche valores
+    note->title(note_ptr->title());
+    note->content(note_ptr->content());
+
+    _notes.push_back(note);
+}
+
+void Notebook::note(Check_List* note_ptr){
+    Check_List* note = new Check_List();
+    // Preenche valores
+    note->title(note_ptr->title());
+    note->content(note_ptr->content());
+    note->checked(note_ptr->checked());
+
+    _notes.push_back(note);
+}
+
 void Notebook::show(){
     cout << "Notebook: " << _title.toStdString() << "\t(id: " << _uid << ')' << endl;
     unsigned i = 0;
@@ -17,83 +36,46 @@ void Notebook::show(){
         cout << "Nota " << i++ << ": " << ((*iter)->title()).toStdString() << endl;
 }
 
-void Notebook::del(unsigned int i){
+void Notebook::del(long long i){
     vector<Note*>::iterator it = _notes.begin() + i;
     _notes.erase(it);
 }
 
-void Notebook::load(){
-    if (!_notes.empty()) // Já está carregado
-        return;
-    cout << "Loading notes for " << _title.toStdString() << " Notebook" << endl;
-    if (_notes.size() != 0) // Já está carregado
-        _notes.clear();
-    QByteArray input;
+Notebook::Notebook(QJsonObject book_obj){
+    QJsonArray note_arr = book_obj["notes"].toArray();
+    _title = book_obj["title"].toString();
 
-    QFile fin(QDir::currentPath() + "\\output.json");
-    if(fin.open(QIODevice::ReadOnly)){
-        input = fin.readAll();
-        fin.close();
-    } else {
-        cerr << "Erro ao abrir arquivo\n" << endl;
-        return;
-    }
 
-    QJsonParseError jsonError;
-    QJsonDocument jason = QJsonDocument::fromJson(input, &jsonError);
-    if(jsonError.error != QJsonParseError::NoError){
-        cerr << "\nErro ao traduzir json" << endl;
-        return;
-    }
-
-    if(jason.isObject()){
-        QJsonObject jason_obj = jason.object(); // Contains all saved notebooks
-        QString str = "Notebook";
-        if(jason_obj.contains(str)){ // Verifica que possui notebook salvo
-            QJsonArray book_arr = jason_obj[str].toArray();
-            unsigned uid = 0;
-            str = "notes";
-            for (auto book_auto : book_arr){
-                if(uid == _uid){
-                    QJsonObject book_obj = book_auto.toObject();
-
-                    QJsonArray note_arr = book_obj[str].toArray();
-                    if (!note_arr.empty()){
-                        vector<Note*> temp_store(note_arr.size());
-                        short i = 0;
-                        if(book_obj.contains(str)){
-                            for (QJsonValueRef note_ref : note_arr){
-                                QJsonObject note_obj = note_ref.toObject();
-                                Note* note_ptr;
-                                char type = note_obj["type"].toString().toStdString()[0];
-                                switch (type){
-                                case 'p':
-                                    note_ptr = new Plain_Note(note_obj);
-                                    break;
-                                case 'c':
-                                    note_ptr = new Check_List(note_obj);
-                                    break;
-                                default:
-                                    cout << "Fatal error when creating note" << endl;
-                                    return;
-                                }
-
-                                temp_store[i++] = note_ptr;
-                            }
-                        }
-                        for (auto iter = temp_store.begin() ; iter != temp_store.end() ; iter++)
-                            this->note(*iter);
-                        return;
-                    }
-                    else cout << "Empty note array" << endl;
-                } else uid++;
-            }
-        } else {
-            cout << "Erro ao tentar abrir o notebook" << endl;
-            cerr << "Notebook não foi encontrado" << endl;
+    if (!note_arr.empty()){
+        _notes.resize(unsigned(note_arr.size()));
+        unsigned i = 0;
+        for (QJsonValueRef note_ref : note_arr){
+            QJsonObject note_obj = note_ref.toObject();
+            Note* note_ptr;
+            char type = note_obj["type"].toString().toStdString()[0];
+            switch (type){
+            case 'p':
+                note_ptr = new Plain_Note(note_obj);
+            break;
+            case 'c':
+                note_ptr = new Check_List(note_obj);
+            break;
+            default:
+                cout << "Fatal error when creating note" << endl;
             return;
-        }
-    }
+            }
+            _notes[i++] = note_ptr;
+            }
+        } else cout << "Empty note array" << endl;
+    return;
+}
+
+QList<QString> Notebook::list_notes(){
+    QList<QString> list;
+    for(auto note : _notes)
+        list << note->title();
+
+    return list;
 }
 
 QJsonObject Notebook::get_json(){

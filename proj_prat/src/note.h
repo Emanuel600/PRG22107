@@ -4,6 +4,7 @@
 #include <iostream>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QStringList>
 
 using namespace std;
 
@@ -24,7 +25,13 @@ public:
 
     QString title() { return _title; }
 
+    virtual void content(QString) = 0;
+
+    virtual QStringList list_content() = 0;
     virtual QJsonObject get_json() = 0;
+    virtual QString get_string() = 0;
+    virtual QString content() = 0;
+    virtual bool get_type() = 0;
     virtual void display() = 0;
     virtual void edit() = 0;
 };
@@ -40,7 +47,10 @@ public:
 
     QString content() {return _content;}
 
+    QStringList list_content();
+    bool get_type() {return 0;}
     QJsonObject get_json();
+    QString get_string();
     void display();
     void edit();
 };
@@ -55,9 +65,19 @@ public:
 
     void add_item(QString item);
     void change(unsigned i, QString item) {_content[i] = item;}
+    void clear(){_content.clear() ; _checked.clear(); }
     void del(unsigned i);
 
+    void content(QString cont) {_content[0] = cont;}
+    void checked(vector<bool> check) {_checked = check;}
+
+    QString content() {return _content[0];}
+    vector<bool> checked() {return _checked;}
+
+    QStringList list_content();
+    bool get_type() {return 1;}
     QJsonObject get_json();
+    QString get_string();
     void display();
     void edit();
 };
