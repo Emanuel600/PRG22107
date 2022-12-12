@@ -10,6 +10,8 @@ Shelftree::Shelftree(){
 }
 
 void Shelftree::ShowContextMenu(const QPoint & point){
+    if (!currentItem())
+        return;
     QMenu contextMenu(this);
 
     if(this->currentItem()->parent()){
