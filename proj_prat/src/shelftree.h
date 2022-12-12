@@ -21,12 +21,12 @@ private slots:
     void ShowContextMenu(const QPoint &);
 signals:
     // Envia sinal a shelf (parente) que foi modificada
-    void Book_Renamed(unsigned index);
+    void Book_Renamed(unsigned index, QString* str_ptr);
     void Book_Deleted(unsigned index);
-    void Note_Created(unsigned index);
+    void Note_Created(unsigned index, QString* str_ptr);
     void List_Created(unsigned index);
     void Note_Opened(unsigned bx, unsigned nx);
-    void Note_Edited(unsigned bx, unsigned nx);
+    void Note_Edited(unsigned bx, unsigned nx, QString* str_ptr);
     void Note_Deleted(unsigned bx, unsigned nx);
 private:
     // Right-Click menu

@@ -1,4 +1,5 @@
 /* System Includes */
+#include <QTextDocument>
 #include <QInputDialog>
 #include <QDockWidget>
 #include <QMainWindow>
@@ -75,14 +76,15 @@ public:
 private slots:
     /* Chamados quando Book_Tree é modificada */
     /* Livros */
-    void Rename_Book(unsigned index);
+    void Rename_Book(unsigned index, QString* str_ptr);
+    void Append_Note(unsigned index, QString* str_ptr);
     void Delete_Book(unsigned index);
-    void Append_Note(unsigned index);
     void Append_List(unsigned index);
     /* Notas/Listas */
+    void Update_Note();
     void Open_Note(unsigned bx, unsigned nx);
-    void Update_Note(unsigned bx, unsigned nx);
     void Delete_Note(unsigned bx, unsigned nx);
+    void Rename_Note(unsigned bx, unsigned nx, QString* str_ptr);
 private:
     /* Criar Componentes da GUI */
     // Dock
@@ -94,6 +96,7 @@ private:
 
     QTextEdit* Text_Editor;
     Shelftree* Book_Tree;
+    ShelfList* Book_List;
 
     QMenu* fileMenu;
     QAction* newAct;

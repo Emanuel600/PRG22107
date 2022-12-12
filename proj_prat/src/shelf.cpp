@@ -9,12 +9,15 @@ Shelf::Shelf(QWidget* parent) : QMainWindow(parent){
     Text_Editor = new QTextEdit();
     setCentralWidget(Text_Editor);
     Text_Editor->setReadOnly(1);
-
+    /* Connects Book_Tree -> Shelf */
     connect(Book_Tree, &Shelftree::Book_Renamed, this, &Shelf::Rename_Book);
     connect(Book_Tree, &Shelftree::Book_Deleted, this, &Shelf::Delete_Book);
     connect(Book_Tree, &Shelftree::Note_Created, this, &Shelf::Append_Note);
-    connect(Book_Tree, &Shelftree::List_Created, this, &Shelf::Append_List);
+    connect(Book_Tree, &Shelftree::Note_Deleted, this, &Shelf::Delete_Note);
+    connect(Book_Tree, &Shelftree::Note_Edited, this, &Shelf::Rename_Note);
     connect(Book_Tree, &Shelftree::Note_Opened, this, &Shelf::Open_Note);
+    /* Connects Text_Editor -> Shelf */
+    connect(Text_Editor, &QTextEdit::textChanged, this, &Shelf::Update_Note);
 
     this->CreateActions();
     this->CreateMenus();
@@ -24,23 +27,23 @@ Shelf::Shelf(QWidget* parent) : QMainWindow(parent){
 }
 /* Slots */
 /* Livros */
-void Shelf::Rename_Book(unsigned index){
+void Shelf::Rename_Book(unsigned index, QString* str_ptr){
     Notebook* book = _books[index];
     bool ok;
-    QString input = QInputDialog::getText(this, tr("Renomear livro"),
+    (*str_ptr) = QInputDialog::getText(this, tr("Renomear livro"),
                                              tr("Título:"), QLineEdit::Normal,
                                              book->title(), &ok);
-    book->title(input);
+    book->title(*str_ptr);
 }
 void Shelf::Delete_Book(unsigned index){this->del(index);}
-void Shelf::Append_Note(unsigned index){
+void Shelf::Append_Note(unsigned index, QString* str_ptr){
     Notebook* book = _books[index];
     bool ok;
-    QString input = QInputDialog::getText(this, tr("Criar nova nota"),
+    *str_ptr = QInputDialog::getText(this, tr("Criar nova nota"),
                                              tr("Nome da nota:"), QLineEdit::Normal,
                                              tr("Título"), &ok);
     Plain_Note* note_ptr = new Plain_Note();
-    note_ptr->title(input);
+    note_ptr->title(*str_ptr);
     book->note(note_ptr);
 }
 void Shelf::Append_List(unsigned index){
@@ -56,24 +59,37 @@ void Shelf::Append_List(unsigned index){
 /* Notas */
 void Shelf::Open_Note(unsigned bx, unsigned nx){
     Note* note_ptr = _books[bx]->notes()[nx];
-    QString display = note_ptr->get_string();
-
-    Text_Editor->setMarkdown(display);
+    Text_Editor->setText(note_ptr->list_content()[0]);
     setCentralWidget(Text_Editor);
+    Text_Editor->setReadOnly(0);
 }
-void Shelf::Update_Note(unsigned bx, unsigned nx){
+void Shelf::Rename_Note(unsigned bx, unsigned nx, QString* str_ptr){
     Note* note_ptr = _books[bx]->notes()[nx];
-    QString raw_text = Text_Editor->toMarkdown();
 
-    QStringList split_text = raw_text.split("\n");
-    QString title = split_text[0];
+    bool ok;
+    (*str_ptr) = QInputDialog::getText(this, tr("Renomear nota"),
+                                             tr("Nome da nota:"), QLineEdit::Normal,
+                                             note_ptr->title(), &ok);
+    note_ptr->title(*str_ptr);
+}
+void Shelf::Update_Note(){
+    QTreeWidgetItem* child = Book_Tree->currentItem();
+    QTreeWidgetItem* parent = child->parent();
 
-    note_ptr->title(title);
+    if (!parent)
+        return;
+
+    unsigned bx = unsigned(Book_Tree->indexOfTopLevelItem(parent));
+    unsigned nx = unsigned(parent->indexOfChild(child));
+
+    Note* note_ptr = _books[bx]->notes()[nx];
+    QString Note_Content = Text_Editor->toPlainText();
+
+    note_ptr->content(Note_Content);
 }
 void Shelf::Delete_Note(unsigned bx, unsigned nx){
-    vector<Note*> notes = _books[bx]->notes();
-    vector<Note*>::iterator item = notes.begin() + nx;
-    notes.erase(item);
+    Notebook* book = _books[bx];
+    book->del(nx);
 }
 // Ações do livro
 void Shelf::CreateActions(){
